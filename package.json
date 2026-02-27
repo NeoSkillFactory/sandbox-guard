@@ -1,0 +1,22 @@
+{
+  "name": "sandbox-guard",
+  "version": "1.0.0",
+  "description": "Automatically detects and mitigates sandbox escape attempts to prevent OpenClaw from bypassing security boundaries",
+  "main": "scripts/detector.js",
+  "scripts": {
+    "start": "node scripts/detector.js",
+    "detect": "node scripts/detector.js",
+    "mitigate": "node scripts/mitigator.js",
+    "test": "node --test scripts/*.test.js"
+  },
+  "keywords": [
+    "sandbox",
+    "security",
+    "openclaw",
+    "escape-detection"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  }
+}

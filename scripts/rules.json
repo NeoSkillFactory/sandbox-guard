@@ -1,0 +1,98 @@
+{
+  "patterns": [
+    {
+      "id": "proc-access",
+      "type": "fileAccess",
+      "match": "/proc/.*",
+      "severity": "high",
+      "description": "Access to /proc filesystem which can leak process info or enable escapes"
+    },
+    {
+      "id": "dev-tty-write",
+      "type": "fileWrite",
+      "match": "/dev/tty.*",
+      "severity": "high",
+      "description": "Write to TTY device which can enable terminal injection"
+    },
+    {
+      "id": "sys-access",
+      "type": "fileAccess",
+      "match": "/sys/.*",
+      "severity": "high",
+      "description": "Access to /sys filesystem which can modify kernel parameters"
+    },
+    {
+      "id": "symlink-attack",
+      "type": "symlink",
+      "match": "\\.\\./.*/",
+      "severity": "medium",
+      "description": "Symlink traversal that could escape sandbox directory"
+    },
+    {
+      "id": "shell-spawn",
+      "type": "exec",
+      "match": "(sh|bash|zsh|dash|csh)\\s",
+      "severity": "high",
+      "description": "Shell spawning which can bypass sandbox restrictions"
+    },
+    {
+      "id": "curl-wget",
+      "type": "exec",
+      "match": "(curl|wget)\\s",
+      "severity": "medium",
+      "description": "Network download tools that could fetch malicious payloads"
+    },
+    {
+      "id": "chmod-exec",
+      "type": "exec",
+      "match": "chmod\\s+[+]?[0-7]*x",
+      "severity": "medium",
+      "description": "Making files executable which could enable code execution"
+    },
+    {
+      "id": "env-manipulation",
+      "type": "envVar",
+      "match": "(PATH|LD_PRELOAD|LD_LIBRARY_PATH)=",
+      "severity": "high",
+      "description": "Environment variable manipulation to hijack library loading or command resolution"
+    },
+    {
+      "id": "socket-create",
+      "type": "network",
+      "match": "(net\\.connect|net\\.createServer|dgram\\.createSocket|new\\s+WebSocket)",
+      "severity": "medium",
+      "description": "Raw socket creation without sandbox approval"
+    },
+    {
+      "id": "child-process",
+      "type": "exec",
+      "match": "(child_process|execSync|spawnSync|execFileSync|(?<![.\\w])exec\\(|(?<![.\\w])spawn\\()",
+      "severity": "high",
+      "description": "Child process creation which can escape Node.js sandbox"
+    },
+    {
+      "id": "eval-usage",
+      "type": "codeExec",
+      "match": "(eval\\(|Function\\(|vm\\.runIn)",
+      "severity": "medium",
+      "description": "Dynamic code evaluation which can execute arbitrary code"
+    },
+    {
+      "id": "fs-sensitive-paths",
+      "type": "fileAccess",
+      "match": "(/etc/passwd|/etc/shadow|/etc/sudoers|\\.ssh/|authorized_keys)",
+      "severity": "high",
+      "description": "Access to sensitive system files"
+    }
+  ],
+  "actions": {
+    "high": "terminateProcess",
+    "medium": "blockAccess",
+    "low": "logAndWatch"
+  },
+  "thresholds": {
+    "maxHighSeverity": 0,
+    "maxMediumSeverity": 3,
+    "maxLowSeverity": 10
+  }
+}

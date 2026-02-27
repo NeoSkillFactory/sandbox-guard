@@ -1,0 +1,41 @@
+detection:
+  sensitivity: medium
+  scan_hidden_files: false
+  max_file_size_kb: 1024
+  follow_symlinks: false
+  file_extensions:
+    - .js
+    - .ts
+    - .sh
+    - .bash
+    - .py
+    - .rb
+    - .pl
+
+alerts:
+  severity_levels:
+    high:
+      action: terminateProcess
+      notify: true
+      log_level: error
+    medium:
+      action: blockAccess
+      notify: true
+      log_level: warn
+    low:
+      action: logAndWatch
+      notify: false
+      log_level: info
+
+logging:
+  enabled: true
+  output: stdout
+  format: json
+  include_context: true
+  max_events: 1000
+
+integration:
+  openclaw:
+    enabled: true
+    event_prefix: "sandbox-guard"
+    feedback_mode: inline
