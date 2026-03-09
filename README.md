@@ -2,26 +2,28 @@
 
 ![Audit](https://img.shields.io/badge/audit%3A%20PASS-brightgreen) ![License](https://img.shields.io/badge/license-MIT-blue) ![OpenClaw](https://img.shields.io/badge/OpenClaw-skill-orange)
 
-> A skill that automatically detects and mitigates sandbox escape attempts to prevent OpenClaw from bypassing security boundaries
+> Automatically detects and mitigates sandbox escape attempts to prevent OpenClaw from bypassing security boundaries.
 
-I don't see any previous context or incomplete task in our conversation. Could you clarify what you'd like me to continue with? For example:
+## Features
 
-- Are you asking me to continue working on a specific file or project?
-- Did you have a task in progress that timed out?
-- Are you referring to something from a previous session?
+1. **Monitoring** - Tracks system call patterns and file access for suspicious activity
+2. **Detection** - Identifies bypass attempts using regex patterns and behavioral analysis
+3. **Mitigation** - Implements containment via process termination, access blocking, or isolation
+4. **Logging** - Records all security events with timestamps and context
+5. **Integration** - Exposes CLI and programmatic API for agent workflow triggers
 
-If you can point me to the specific work or context you want me to pick up, I'll be happy to continue from there.
+## Configuration
 
-## OpenClaw Marketplace
+See `assets/config.yaml` for:
+- Detection threshold sensitivity settings
+- Alert severity levels
+- Integration hooks for OpenClaw agents
 
-This skill is available on [ClawHub](https://clawhub.ai) — the OpenClaw skill marketplace.
-Install it in any OpenClaw agent workspace with:
+## GitHub
 
-```bash
-clawhub install sandbox-guard
-```
+Source code: [github.com/NeoSkillFactory/sandbox-guard](https://github.com/NeoSkillFactory/sandbox-guard)
 
-**Recommended price when commercial:** $49 USD
+**Price suggestion:** $49 USD
 
 ## License
 
