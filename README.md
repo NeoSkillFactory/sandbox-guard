@@ -23,8 +23,6 @@ See `assets/config.yaml` for:
 
 Source code: [github.com/NeoSkillFactory/sandbox-guard](https://github.com/NeoSkillFactory/sandbox-guard)
 
-**Price suggestion:** $49 USD
-
 ## License
 
 MIT © NeoSkillFactory
