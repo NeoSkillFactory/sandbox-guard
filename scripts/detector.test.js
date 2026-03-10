@@ -159,4 +159,62 @@ module.exports = { add };
     assert.ok(result.error);
     assert.equal(result.threats.length, 0);
   });
+
+  it("should not false-positive on words containing shell names", () => {
+    const filePath = writeTmpFile("no-fp.js", `
+git push origin main
+const crashed = true;
+flashcard.show();
+`);
+    const detector = new Detector();
+    const result = detector.scanFile(filePath);
+    const shellThreat = result.threats.find((t) => t.id === "shell-spawn");
+    assert.equal(shellThreat, undefined, "Should not flag 'push', 'crash', 'flash' as shell spawning");
+  });
+
+  it("should still detect standalone shell commands", () => {
+    const filePath = writeTmpFile("real-shell.sh", `#!/bin/bash
+sh -c "id"
+bash -c "whoami"
+`);
+    const detector = new Detector();
+    const result = detector.scanFile(filePath);
+    const shellThreats = result.threats.filter((t) => t.id === "shell-spawn");
+    assert.ok(shellThreats.length >= 2, "Should detect sh and bash invocations");
+  });
+
+  it("should skip node_modules during directory scan", () => {
+    const nmDir = path.join(TMP_DIR, "node_modules");
+    fs.mkdirSync(nmDir, { recursive: true });
+    fs.writeFileSync(path.join(nmDir, "evil.js"), 'eval("hack");', "utf8");
+    writeTmpFile("safe.js", "const x = 1;\n");
+    const detector = new Detector();
+    const result = detector.scanDirectory(TMP_DIR);
+    const nmThreats = result.threats.filter((t) => t.file.includes("node_modules"));
+    assert.equal(nmThreats.length, 0, "Should not scan node_modules");
+  });
+
+  it("should respect file extension filter in directory scan", () => {
+    writeTmpFile("data.txt", 'eval("ignored");');
+    writeTmpFile("code.js", "const x = 1;\n");
+    const detector = new Detector();
+    const result = detector.scanDirectory(TMP_DIR);
+    const txtThreats = result.threats.filter((t) => t.file.endsWith(".txt"));
+    assert.equal(txtThreats.length, 0, "Should not scan .txt files");
+  });
+
+  it("should detect multiple threat types in the same file", () => {
+    const filePath = writeTmpFile("multi.js", `
+const cp = require('child_process');
+eval('fs.readFileSync("/proc/self/maps")');
+net.connect({port: 4444});
+`);
+    const detector = new Detector();
+    const result = detector.scanFile(filePath);
+    const ids = new Set(result.threats.map((t) => t.id));
+    assert.ok(ids.has("child-process"), "Should detect child_process");
+    assert.ok(ids.has("eval-usage"), "Should detect eval");
+    assert.ok(ids.has("proc-access"), "Should detect /proc access");
+    assert.ok(ids.has("socket-create"), "Should detect socket creation");
+  });
 });

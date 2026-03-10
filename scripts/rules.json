@@ -31,7 +31,7 @@
     {
       "id": "shell-spawn",
       "type": "exec",
-      "match": "(sh|bash|zsh|dash|csh)\\s",
+      "match": "(?<![\\w/.-])(sh|bash|zsh|dash|csh)\\s",
       "severity": "high",
       "description": "Shell spawning which can bypass sandbox restrictions"
     },
